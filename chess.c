@@ -1,9 +1,9 @@
 #include<stdio.h>
 
 
-#Making a dummy board
+//Making a dummy board
 
-int main(){
+void manual_board(){
     int i = 1;
     int j = 1;
     int k = 1;
@@ -15,5 +15,10 @@ int main(){
         j = 1;
         printf("\n\n");
     }
+}
+
+int main(){
+    manual_board();
+    
 }
 
