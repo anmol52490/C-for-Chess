@@ -15,6 +15,16 @@ typedef struct{
      ENPASSANT enpassant;
 }square;
 
+const char* piece_list[] ={
+    " ",
+    "P",
+    "R",
+    "K",
+    "B",
+    "Ki",
+    "Q"
+};
+
 
 void valid_moves(square S[][8], int from, int to){
     int from_row;
@@ -28,44 +38,58 @@ void valid_moves(square S[][8], int from, int to){
     int to_color;
     int to_piece;
 
-    printf("checking which piece is it? for position %d",from);
+    printf("checking which piece is it? for position %d to position %d\n",from,to);
+    
     from_row = from/10;
-    from_col = (from - from_row)/10;
-    printf("From row and From col is : %d %d",from_row,from_col);
+    from_col = (from - from_row*10);
+
+    printf("The piece is: %s\n",piece_list[S[from_row][from_col].piece]);
+    printf("From row and From col is : %d %d \n",from_row,from_col);
     to_row = to/10;
-    to_col = (to - to_row)/10;
+    to_col = (to - to_row*10);
+    printf("To row and to col is : %d %d \n",to_row,to_col);
     diff = to-from;
     from_color = S[from_row][from_col].color;
     from_piece = S[from_row][from_col].piece;
     to_color = S[to_row][to_col].color;
     to_piece = S[to_row][to_col].piece;
     bool en = S[to_row][to_col].enpassant;
+    int i;
 
 
     switch(from_piece){
 
         // pawn piece
         case 1:
-            printf("\n The piece is pawn");
+            printf("\n The piece is pawn\n");
             if (((to>from) && from_color==0 ) ||((to<from) && to_color==1)){
                 //moving straight
-                if(((diff==10 || diff==20) || (diff=-10 || diff==-10)) && to_piece==0){
+                printf("moving straight\n");
+                if(((diff==10 || diff==20) || (diff=-10 || diff==-20)) && to_piece==0){
                     if (diff == 10 || diff ==-10){
+                        printf("moving 1 step\n");
                         S[to_row][to_col].enpassant=0;
                     }
                     else{
+                        printf("moving 2 step\n");
                         S[to_row][to_col].enpassant=1; //enpassant activate
                     }
-                    to_piece = 1;
-                    from_piece=0;
+                    S[to_row][to_col].piece = 1;
+                    S[from_row][from_col].piece=0;
+                    S[from_row][from_col].color=2;
+                    S[to_row][to_col].color=from_color;
+                    printf("valid pawn move \n");
                 }
 
                 //capturing diagonal pawn
-                else if(((diff==9 || diff==11) || (diff=-9 || diff==-11)) && to_piece==1 && (from_color!=to_color)){
-                    to_piece = from_piece;
-                    to_color = from_color;
-                    from_piece = 0;
+                else if(((diff==9 || diff==11) || (diff=-9 || diff==-11)) && to_piece>0 && (from_color!=to_color)){
+                    printf("capturing diagonal");
+                    S[to_row][to_col].piece = from_piece;
+                    S[to_row][to_col].color = 2;
+                    S[from_row][from_col].piece = 0;
                     S[to_row][to_col].enpassant=0;
+                    
+                    printf("valid pawn move \n");
             
                 }
 
@@ -77,7 +101,8 @@ void valid_moves(square S[][8], int from, int to){
                             S[to_row-1][to_col].color = from_color;
                             S[to_row][to_col].piece = 0;
                             S[to_row][to_col].color = 2;
-
+                            
+                            printf("valid pawn move \n");
                         }
                     // black
                         else if(from_color==0 && S[to_row+1][to_col].piece==0){
@@ -85,13 +110,58 @@ void valid_moves(square S[][8], int from, int to){
                             S[to_row+1][to_col].color = from_color;
                             S[to_row][to_col].piece = 0;
                             S[to_row][to_col].color = 2;
+                            
+                            printf("valid pawn move \n");
                         }
 
                 }
     }
-    };
-}
+        // THE ROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOK
+        case 2:
+            if(from_row==to_row){
+                if(from_col>to_col){
+                    for(i=from_col;i>to_col;i--){
+                        if (S[from_row][i].piece==0);
+                        else {
+                            printf("invalid rook move\n");
+                            break;
+                    }
+                }
+            }
 
+            if(from_col<to_col){
+                    for(i=from_col;i<to_col;i++){
+                        if (S[from_row][i].piece==0);
+                        else {
+                            printf("invalid rook move\n");
+                            break;
+                    }
+                }
+            }
+            }
+            else if(from_col==to_col){
+                if(from_row>to_row){
+                            for(i=from_row;i>to_col;i--){
+                                if (S[i][from_col].piece==0);
+                                else {
+                                    printf("invalid rook move\n");
+                                    break;
+                            }
+                        }
+                    }
+
+                else if(from_row<to_row){
+                            for(i=from_row;i<to_row;i++){
+                                if (S[i][from_col].piece==0);
+                                else {
+                                    printf("invalid rook move\n");
+                                    break;
+                            }
+                        }
+                    }
+        }
+    }
+}
 
 void struct_board(square S[][8]){
     int pieces_initial[8][8] =
@@ -125,10 +195,13 @@ void struct_board(square S[][8]){
 
 
 void view_board(square S[][8]){
+    int j=0;
+    printf("\n");
     for(int i=0;i<8;i++){
-        for(int j=0;j<8;j++){
-            printf("\t%d %d\t",S[i][j].color,S[i][j].piece);
+        for(j=0;j<8;j++){
+            printf("\t%d  %s\t",S[i][j].color,piece_list[S[i][j].piece]);
         }
+        j=0;
         printf("\n");
     }
 }
@@ -143,9 +216,11 @@ int main(){
     square S[8][8];
 
     struct_board(S);
+    view_board(S);
 
+    do{
 
-    printf("\nMoving pieces: Tell which FROM which position TO which position you want to move?\n");
+    printf("\nMoving pieces: Tell FROM which position TO which position you want to move?\n");
     printf("Give both position in range of 11 to 88: ");
     
     scanf("%d",&from);
@@ -154,7 +229,8 @@ int main(){
     from = from-11;
     to = to-11;
 
-
     valid_moves(S,from,to);
+    view_board(S);
+    }while(1);
 }
 
