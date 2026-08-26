@@ -1,2 +1,4 @@
 *.exe
 main.c
+test_it.c
+tscp183b
