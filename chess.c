@@ -8,11 +8,14 @@ typedef enum  {BLACK, WHITE, NONES} COLOR;
 
 typedef enum {FALSE, TRUE} ENPASSANT;
 
+// typedef enum {TRUE, FALSE} PAWNDOUBLE;
+
 
 typedef struct{
      PIECE piece;
      COLOR color;
      ENPASSANT enpassant;
+    //  PAWNDOUBLE pawndouble;
 }square;
 
 const char* piece_list[] ={
@@ -53,22 +56,30 @@ void valid_moves(square S[][8], int from, int to){
     from_piece = S[from_row][from_col].piece;
     to_color = S[to_row][to_col].color;
     to_piece = S[to_row][to_col].piece;
-    bool en = S[to_row][to_col].enpassant;
+    bool to_en = S[to_row][to_col].enpassant;
+    bool from_en = S[from_row][from_col].enpassant;
+    
     int i;
-
+    printf("the diff is %d",diff);
 
     switch(from_piece){
 
         // pawn piece
         case 1:
+            
             printf("\n The piece is pawn\n");
-            if (((to>from) && from_color==0 ) ||((to<from) && to_color==1)){
+
+            if(((diff==10 || diff==20) || (diff==-10 || diff==-20)) && to_piece==0){
+                printf("The pawn move is valid for straight move\n");
+            
+                if (((to>from) && from_color==0 ) || ((to<from) && from_color==1)){
                 //moving straight
                 printf("moving straight\n");
-                if(((diff==10 || diff==20) || (diff=-10 || diff==-20)) && to_piece==0){
+                
                     if (diff == 10 || diff ==-10){
                         printf("moving 1 step\n");
                         S[to_row][to_col].enpassant=0;
+                        
                     }
                     else{
                         printf("moving 2 step\n");
@@ -78,46 +89,59 @@ void valid_moves(square S[][8], int from, int to){
                     S[from_row][from_col].piece=0;
                     S[from_row][from_col].color=2;
                     S[to_row][to_col].color=from_color;
-                    printf("valid pawn move \n");
                 }
+            }
 
                 //capturing diagonal pawn
-                else if(((diff==9 || diff==11) || (diff=-9 || diff==-11)) && to_piece>0 && (from_color!=to_color)){
-                    printf("capturing diagonal");
+            else if(((diff==9 || diff==11) || (diff=-9 || diff==-11)) && to_piece>0 && (from_color!=to_color)){
+                    printf("Pawn move is valid for capturing diagonal\n");
                     S[to_row][to_col].piece = from_piece;
-                    S[to_row][to_col].color = 2;
+                    S[to_row][to_col].color = from_color;
                     S[from_row][from_col].piece = 0;
+                    S[from_row][from_col].color = 2;
                     S[to_row][to_col].enpassant=0;
                     
-                    printf("valid pawn move \n");
-            
                 }
 
                 //en-passant
-                else if(en==1  && ((from_color==0 && to_color==1)||(from_color==1 && to_color==0))){
+            else if(((from_color==0 && to_color==1 && to_en)||(from_color==1 && to_color==0 && from_en))){
                     // white 
-                        if (from_color==1 && (diff>0 || diff<0) && S[to_row-1][to_col].piece==0){
+                    printf("Pawn move is valid for enpassant\n");
+                        if (from_color==1 && S[to_row-1][to_col].piece==0){
+                            printf("white enpassanting black\n");
                             S[to_row-1][to_col].piece = from_piece;
                             S[to_row-1][to_col].color = from_color;
                             S[to_row][to_col].piece = 0;
                             S[to_row][to_col].color = 2;
-                            
-                            printf("valid pawn move \n");
+                            S[from_row][from_col].piece = 0;
+                            S[from_row][from_col].color = 2;
+                            S[to_row-1][to_col].enpassant = 0;
+                           
                         }
                     // black
                         else if(from_color==0 && S[to_row+1][to_col].piece==0){
+                            printf("black enpassanting white");
                             S[to_row+1][to_col].piece = from_piece;
                             S[to_row+1][to_col].color = from_color;
                             S[to_row][to_col].piece = 0;
                             S[to_row][to_col].color = 2;
-                            
+                            S[from_row][from_col].piece = 0;
+                            S[from_row][from_col].color = 2;
+                            S[to_row-1][to_col].enpassant = 0; 
+
                             printf("valid pawn move \n");
                         }
 
                 }
-    }
+            
+            else{
+                printf("Invalid pawn move");
+            }
+    
+
         // THE ROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOK
         case 2:
+            printf("The piece is rooook");
             if(from_row==to_row){
                 if(from_col>to_col){
                     for(i=from_col;i>to_col;i--){
