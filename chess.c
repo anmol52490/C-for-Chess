@@ -119,6 +119,7 @@ void valid_moves(square S[][8], int from, int to)
         {
             printf("Invalid pawn move\n");
         }
+        break;
     }
     // THE ROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOK
     case 2:
@@ -184,6 +185,7 @@ void valid_moves(square S[][8], int from, int to)
             }
         }
     }
+    break;
     }
 }
 
