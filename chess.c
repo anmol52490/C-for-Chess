@@ -10,14 +10,30 @@ typedef enum {FALSE, TRUE} ENPASSANT;
 
 // typedef enum {TRUE, FALSE} PAWNDOUBLE;
 
+typedef struct{
+    bool enpassant;
+    bool pawndouble;
+}PAWNMETADATA;
+
+typedef union{
+    PAWNMETADATA pawnmetadata;
+}METADATA;
+
+typedef struct {
+    PIECE piece;
+    COLOR color;
+    METADATA metadata;
+}DATA;
 
 typedef struct{
-     PIECE piece;
-     COLOR color;
-     ENPASSANT enpassant;
-    //  PAWNDOUBLE pawndouble;
+     DATA data;   
 }square;
 
+
+DATA empty={
+    .piece=NONE,
+    .color=NONES,
+};
 const char* piece_list[] ={
     " ",
     "P",
@@ -46,18 +62,17 @@ void valid_moves(square S[][8], int from, int to){
     from_row = from/10;
     from_col = (from - from_row*10);
 
-    printf("The piece is: %s\n",piece_list[S[from_row][from_col].piece]);
+    printf("The piece is: %s\n",piece_list[S[from_row][from_col].data.piece]);
     printf("From row and From col is : %d %d \n",from_row,from_col);
     to_row = to/10;
     to_col = (to - to_row*10);
     printf("To row and to col is : %d %d \n",to_row,to_col);
     diff = to-from;
-    from_color = S[from_row][from_col].color;
-    from_piece = S[from_row][from_col].piece;
-    to_color = S[to_row][to_col].color;
-    to_piece = S[to_row][to_col].piece;
-    bool to_en = S[to_row][to_col].enpassant;
-    bool from_en = S[from_row][from_col].enpassant;
+    from_color = S[from_row][from_col].data.color;
+    from_piece = S[from_row][from_col].data.piece;
+    to_color = S[to_row][to_col].data.color;
+    to_piece = S[to_row][to_col].data.piece;
+    
     
     int i;
     printf("the diff is %d",diff);
@@ -65,7 +80,11 @@ void valid_moves(square S[][8], int from, int to){
     switch(from_piece){
 
         // pawn piece
-        case 1:
+        case 1:{
+            bool to_en = S[to_row][to_col].data.metadata.pawnmetadata.enpassant;
+            bool from_en = S[from_row][from_col].data.metadata.pawnmetadata.enpassant;
+            bool from_pd = S[from_row][from_col].data.metadata.pawnmetadata.pawndouble;
+            bool to_pd = S[to_row][to_col].data.metadata.pawnmetadata.pawndouble;
             
             printf("\n The piece is pawn\n");
 
@@ -78,28 +97,40 @@ void valid_moves(square S[][8], int from, int to){
                 
                     if (diff == 10 || diff ==-10){
                         printf("moving 1 step\n");
-                        S[to_row][to_col].enpassant=0;
+                        S[from_row][from_col].data.metadata.pawnmetadata.enpassant = 0;
+                        S[from_row][from_col].data.metadata.pawnmetadata.pawndouble = 0;
                         
                     }
-                    else{
+                    else if(S[from_row][from_col].data.metadata.pawnmetadata.pawndouble==1){
                         printf("moving 2 step\n");
-                        S[to_row][to_col].enpassant=1; //enpassant activate
+                        S[from_row][from_col].data.metadata.pawnmetadata.pawndouble = 0;
+                        S[from_row][from_col].data.metadata.pawnmetadata.enpassant = 1; //enpassant activate
                     }
-                    S[to_row][to_col].piece = 1;
-                    S[from_row][from_col].piece=0;
-                    S[from_row][from_col].color=2;
-                    S[to_row][to_col].color=from_color;
+                    else{
+                        printf("invalid pawn move\n");
+                        break;
+                    }
+
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                    // S[to_row][to_col].piece = 1;
+                    // S[from_row][from_col].piece=0;
+                    // S[from_row][from_col].data.color=2;
+                    // S[to_row][to_col].data.color=from_color;
                 }
             }
 
                 //capturing diagonal pawn
-            else if(((diff==9 || diff==11) || (diff=-9 || diff==-11)) && to_piece>0 && (from_color!=to_color)){
+            else if(((diff==9 || diff==11) || (diff==-9 || diff==-11)) && to_piece>0 && (from_color!=to_color)){
+                    S[from_row][from_col].data.metadata.pawnmetadata.pawndouble = 0;
                     printf("Pawn move is valid for capturing diagonal\n");
-                    S[to_row][to_col].piece = from_piece;
-                    S[to_row][to_col].color = from_color;
-                    S[from_row][from_col].piece = 0;
-                    S[from_row][from_col].color = 2;
-                    S[to_row][to_col].enpassant=0;
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                    // S[to_row][to_col].piece = from_piece;
+                    // S[to_row][to_col].data.color = from_color;
+                    // S[from_row][from_col].piece = 0;
+                    // S[from_row][from_col].data.color = 2;
+                    S[to_row][to_col].data.metadata.pawnmetadata.enpassant = 0;
                     
                 }
 
@@ -107,27 +138,32 @@ void valid_moves(square S[][8], int from, int to){
             else if(((from_color==0 && to_color==1 && to_en)||(from_color==1 && to_color==0 && from_en))){
                     // white 
                     printf("Pawn move is valid for enpassant\n");
-                        if (from_color==1 && S[to_row-1][to_col].piece==0){
+                        if (from_color==1 && S[to_row-1][to_col].data.piece==0){
+                            S[from_row][from_col].data.metadata.pawnmetadata.pawndouble = 0;
                             printf("white enpassanting black\n");
-                            S[to_row-1][to_col].piece = from_piece;
-                            S[to_row-1][to_col].color = from_color;
-                            S[to_row][to_col].piece = 0;
-                            S[to_row][to_col].color = 2;
-                            S[from_row][from_col].piece = 0;
-                            S[from_row][from_col].color = 2;
-                            S[to_row-1][to_col].enpassant = 0;
+                            S[to_row-1][to_col].data = S[from_row][from_col].data;
+                            S[from_row][from_col].data = empty;
+                            // S[to_row-1][to_col].data.color = from_color;
+                            // S[to_row][to_col].piece = 0;
+                            // S[to_row][to_col].data.color = 2;
+                            // S[from_row][from_col].piece = 0;
+                            // S[from_row][from_col].data.color = 2;
+                            S[to_row-1][to_col].data.metadata.pawnmetadata.enpassant = 0;
                            
                         }
                     // black
-                        else if(from_color==0 && S[to_row+1][to_col].piece==0){
+                        else if(from_color==0 && S[to_row+1][to_col].data.piece==0){
+                            S[from_row][from_col].data.metadata.pawnmetadata.pawndouble = 0;
                             printf("black enpassanting white");
-                            S[to_row+1][to_col].piece = from_piece;
-                            S[to_row+1][to_col].color = from_color;
-                            S[to_row][to_col].piece = 0;
-                            S[to_row][to_col].color = 2;
-                            S[from_row][from_col].piece = 0;
-                            S[from_row][from_col].color = 2;
-                            S[to_row-1][to_col].enpassant = 0; 
+                            S[to_row+1][to_col].data = S[from_row][from_col].data;
+                            S[from_row][from_col].data = empty;
+                            // S[to_row+1][to_col].data.color = from_color;
+                            // S[to_row][to_col].piece = 0;
+                            // S[to_row][to_col].data.color = 2;
+                            // S[from_row][from_col].piece = 0;
+                            // S[from_row][from_col].data.color = 2;
+                            S[to_row-1][to_col].data.metadata.pawnmetadata.enpassant = 0; 
+                            
 
                             printf("valid pawn move \n");
                         }
@@ -135,17 +171,17 @@ void valid_moves(square S[][8], int from, int to){
                 }
             
             else{
-                printf("Invalid pawn move");
+                printf("Invalid pawn move\n");
             }
     
-
+        }
         // THE ROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOK
-        case 2:
-            printf("The piece is rooook");
+        case 2:{
+            printf("The piece is rooook\n");
             if(from_row==to_row){
                 if(from_col>to_col){
                     for(i=from_col;i>to_col;i--){
-                        if (S[from_row][i].piece==0);
+                        if (S[from_row][i].data.piece==0);
                         else {
                             printf("invalid rook move\n");
                             break;
@@ -155,7 +191,7 @@ void valid_moves(square S[][8], int from, int to){
 
             if(from_col<to_col){
                     for(i=from_col;i<to_col;i++){
-                        if (S[from_row][i].piece==0);
+                        if (S[from_row][i].data.piece==0);
                         else {
                             printf("invalid rook move\n");
                             break;
@@ -166,7 +202,7 @@ void valid_moves(square S[][8], int from, int to){
             else if(from_col==to_col){
                 if(from_row>to_row){
                             for(i=from_row;i>to_col;i--){
-                                if (S[i][from_col].piece==0);
+                                if (S[i][from_col].data.piece==0);
                                 else {
                                     printf("invalid rook move\n");
                                     break;
@@ -176,7 +212,7 @@ void valid_moves(square S[][8], int from, int to){
 
                 else if(from_row<to_row){
                             for(i=from_row;i<to_row;i++){
-                                if (S[i][from_col].piece==0);
+                                if (S[i][from_col].data.piece==0);
                                 else {
                                     printf("invalid rook move\n");
                                     break;
@@ -185,6 +221,7 @@ void valid_moves(square S[][8], int from, int to){
                     }
         }
     }
+}
 }
 
 void struct_board(square S[][8]){
@@ -202,17 +239,20 @@ void struct_board(square S[][8]){
     for(int i=0;i<8;i++){
         for(int j=0;j<8;j++){
             
-            S[i][j].piece=pieces_initial[i][j];
+            S[i][j].data.piece=pieces_initial[i][j];
             if (i==0 || i==1){
-                S[i][j].color = 0;
+                S[i][j].data.color = 0;
             }
             else if (i==6 || i==7){
-                S[i][j].color=1;
+                S[i][j].data.color=1;
             }
             else{
-                S[i][j].color=2;
+                S[i][j].data.color=2;
             }
-            S[i][j].enpassant=0;
+            if (S[i][j].data.piece==1){
+                S[i][j].data.metadata.pawnmetadata.pawndouble = 1;
+                S[i][j].data.metadata.pawnmetadata.enpassant = 0;
+            }
         }
     }
 }
@@ -223,7 +263,7 @@ void view_board(square S[][8]){
     printf("\n");
     for(int i=0;i<8;i++){
         for(j=0;j<8;j++){
-            printf("\t%d  %s\t",S[i][j].color,piece_list[S[i][j].piece]);
+            printf("\t%d  %s\t",S[i][j].data.color,piece_list[S[i][j].data.piece]);
         }
         j=0;
         printf("\n");
@@ -234,7 +274,7 @@ int main(){
 
     int row = 8;
     int col = 8;
-    int chessarr[row][col];
+    
     int from=0;
     int to=0;
     square S[8][8];
