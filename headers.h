@@ -47,7 +47,6 @@ typedef struct
     DATA data;
 } square;
 
-
 DATA empty = {
     .piece = NONE,
     .color = NONES,
