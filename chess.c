@@ -113,10 +113,7 @@ void valid_moves(square S[][8], int from, int to){
 
                     S[to_row][to_col].data = S[from_row][from_col].data;
                     S[from_row][from_col].data = empty;
-                    // S[to_row][to_col].piece = 1;
-                    // S[from_row][from_col].piece=0;
-                    // S[from_row][from_col].data.color=2;
-                    // S[to_row][to_col].data.color=from_color;
+
                 }
             }
 
@@ -126,10 +123,6 @@ void valid_moves(square S[][8], int from, int to){
                     printf("Pawn move is valid for capturing diagonal\n");
                     S[to_row][to_col].data = S[from_row][from_col].data;
                     S[from_row][from_col].data = empty;
-                    // S[to_row][to_col].piece = from_piece;
-                    // S[to_row][to_col].data.color = from_color;
-                    // S[from_row][from_col].piece = 0;
-                    // S[from_row][from_col].data.color = 2;
                     S[to_row][to_col].data.metadata.pawnmetadata.enpassant = 0;
                     
                 }
@@ -143,11 +136,6 @@ void valid_moves(square S[][8], int from, int to){
                             printf("white enpassanting black\n");
                             S[to_row-1][to_col].data = S[from_row][from_col].data;
                             S[from_row][from_col].data = empty;
-                            // S[to_row-1][to_col].data.color = from_color;
-                            // S[to_row][to_col].piece = 0;
-                            // S[to_row][to_col].data.color = 2;
-                            // S[from_row][from_col].piece = 0;
-                            // S[from_row][from_col].data.color = 2;
                             S[to_row-1][to_col].data.metadata.pawnmetadata.enpassant = 0;
                            
                         }
@@ -157,11 +145,6 @@ void valid_moves(square S[][8], int from, int to){
                             printf("black enpassanting white");
                             S[to_row+1][to_col].data = S[from_row][from_col].data;
                             S[from_row][from_col].data = empty;
-                            // S[to_row+1][to_col].data.color = from_color;
-                            // S[to_row][to_col].piece = 0;
-                            // S[to_row][to_col].data.color = 2;
-                            // S[from_row][from_col].piece = 0;
-                            // S[from_row][from_col].data.color = 2;
                             S[to_row-1][to_col].data.metadata.pawnmetadata.enpassant = 0; 
                             
 
