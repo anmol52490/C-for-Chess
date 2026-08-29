@@ -156,9 +156,14 @@ void valid_moves(square S[][12], int from, int to)
                     }
                 }
             }
+            if(from_color!=to_color){
             S[to_row][to_col].data = S[from_row][from_col].data;
             S[from_row][from_col].data = empty;
             S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
+            }
+            else{
+                printf("same color dude what are you doing? LOCK IN \n");
+            }
 
         }
         else if (from_col == to_col) //vertical movement
@@ -195,9 +200,14 @@ void valid_moves(square S[][12], int from, int to)
                 }
                 
             }
+            if(from_color!=to_color){
             S[to_row][to_col].data = S[from_row][from_col].data;
             S[from_row][from_col].data = empty;
             S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
+            }
+            else{
+                printf("same color dude what are you doing? LOCK IN \n");
+            }
         }
     }
     invalid_move:
