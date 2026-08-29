@@ -17,12 +17,12 @@ void valid_moves(square S[][12], int from, int to)
 
     printf("checking which piece is it? for position %d to position %d\n", from, to);
 
-    from_row = from / 10 ;
+    from_row = from / 10;
     from_col = (from - from_row * 10);
 
     printf("The piece is: %s\n", piece_list[S[from_row][from_col].data.piece]);
     printf("From row and From col is : %d %d \n", from_row, from_col);
-    to_row = to / 10 ;
+    to_row = to / 10;
     to_col = (to - to_row * 10);
     printf("To row and to col is : %d %d \n", to_row, to_col);
     diff = to - from;
@@ -125,17 +125,18 @@ void valid_moves(square S[][12], int from, int to)
     case ROOK:
     {
         printf("The piece is rooook\n");
-        if ((from_row == to_row) && S[to_row][to_col].data.piece==0) //horizontal movement
+        if ((from_row == to_row) && S[to_row][to_col].data.piece == 0) // horizontal movement
         {
-            printf("the from_col: %d == to_col: %d\n",from_col,to_col);
-            if (from_col > to_col)  //right to left
+            printf("the from_col: %d == to_col: %d\n", from_col, to_col);
+            if (from_col > to_col) // right to left
             {
                 printf("right to left\n");
-                for (i = from_col-1; i > to_col; i--)
+                for (i = from_col - 1; i > to_col; i--)
                 {
 
-                    if (S[from_row][i].data.piece == 0);
-                    else //something blocks the rook
+                    if (S[from_row][i].data.piece == 0)
+                        ;
+                    else // something blocks the rook
                     {
                         printf("invalid rook move\n");
                         goto invalid_move;
@@ -143,40 +144,43 @@ void valid_moves(square S[][12], int from, int to)
                 }
             }
 
-            if (from_col < to_col) //left to right
+            if (from_col < to_col) // left to right
             {
                 printf("left to right\n");
-                for (i = from_col+1; i < to_col; i++)
+                for (i = from_col + 1; i < to_col; i++)
                 {
-                    if (S[from_row][i].data.piece == 0);
-                    else //something blocks the rook
+                    if (S[from_row][i].data.piece == 0)
+                        ;
+                    else // something blocks the rook
                     {
                         printf("invalid rook move\n");
                         goto invalid_move;
                     }
                 }
             }
-            if(from_color!=to_color){
-            S[to_row][to_col].data = S[from_row][from_col].data;
-            S[from_row][from_col].data = empty;
-            S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
+            if (from_color != to_color)
+            {
+                S[to_row][to_col].data = S[from_row][from_col].data;
+                S[from_row][from_col].data = empty;
+                S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
             }
-            else{
+            else
+            {
                 printf("same color dude what are you doing? LOCK IN \n");
             }
-
         }
-        else if (from_col == to_col && S[to_row][to_col].data.piece==0) //vertical movement
+        else if (from_col == to_col && S[to_row][to_col].data.piece == 0) // vertical movement
         {
-            printf("the from_row: %d == to_row: %d\n",from_row,to_row);
-            if (from_row > to_row) //down to up 
+            printf("the from_row: %d == to_row: %d\n", from_row, to_row);
+            if (from_row > to_row) // down to up
             {
                 printf("down to up\n");
-                for (i = from_row-1; i > to_row; i--)
+                for (i = from_row - 1; i > to_row; i--)
                 {
-                    if (S[i][from_col].data.piece == 0){
-                    printf(" %d %d after if\n",i, to_col);
-                }
+                    if (S[i][from_col].data.piece == 0)
+                    {
+                        printf(" %d %d after if\n", i, to_col);
+                    }
                     else
                     {
                         printf("inside else\n");
@@ -186,71 +190,159 @@ void valid_moves(square S[][12], int from, int to)
                 }
             }
 
-            else if (from_row < to_row) //up to down
+            else if (from_row < to_row) // up to down
             {
                 printf("up to down\n");
-                for (i = from_row+1; i < to_row; i++)
+                for (i = from_row + 1; i < to_row; i++)
                 {
-                    if (S[i][from_col].data.piece == 0);
+                    if (S[i][from_col].data.piece == 0)
+                        ;
                     else
                     {
                         printf("invalid rook move\n");
                         goto invalid_move;
                     }
                 }
-                
             }
-            if(from_color!=to_color){
-            S[to_row][to_col].data = S[from_row][from_col].data;
-            S[from_row][from_col].data = empty;
-            S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
+            if (from_color != to_color)
+            {
+                S[to_row][to_col].data = S[from_row][from_col].data;
+                S[from_row][from_col].data = empty;
+                S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
             }
-            else{
+            else
+            {
                 printf("same color dude what are you doing? LOCK IN \n");
             }
         }
         break;
     }
 
+    case KNIGHT:
+    {
+        printf("Welcome to the knightworld\n");
+        if (from_color != to_color && S[to_row][to_col].data.piece != -1)
+        {
+            printf("The knight move is valid till now\n");
 
-    case KNIGHT:{
-        printf("Welcome to the knightworld");
+            if (from_row - 2 == to_row)
+            {
+                // going up
+                printf("going up\n");
+                if (to_col < from_col)
+                {
+                    // left
+                    printf("going up-left\n");
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                }
+                else
+                {
 
+                    printf("going up-right\n");
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                }
+            }
+
+            else if (from_row + 2 == to_row)
+            {
+                // going down
+                if (to_col < from_col)
+                {
+                    // left
+                    printf("going down-left\n");
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                }
+                else
+                {
+                    // right
+                    printf("going down-right\n");
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                }
+            }
+
+            else if (from_col - 2 == to_col)
+            {
+                // going left
+                if (to_row < from_row)
+                {
+                    // up
+                    printf("going left-up\n");
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                }
+                else
+                {
+                    // down
+                    printf("going left-down\n");
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                }
+            }
+
+            else if (from_col + 2 == to_col)
+            {
+                // going right
+                if (to_row < from_row)
+                {
+                    // up
+                    printf("going right-up\n");
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                }
+                else
+                {
+                    // down
+                    printf("going right-down\n");
+                    S[to_row][to_col].data = S[from_row][from_col].data;
+                    S[from_row][from_col].data = empty;
+                }
+            }
+        }
+        else
+        {
+            printf("invalid knight move dude LOCK IN!!\n");
+            break;
+        }
     }
     invalid_move:
-    break;
+        break;
     }
 }
 
 void struct_board(square S[][12])
 {
     int pieces_initial[12][12] =
-        {   {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-            {-1,-1,2, 3, 4, 5, 6, 4, 3, 2,-1,-1},
-            {-1,-1,1, 1, 1, 1, 1, 1, 1, 1,-1,-1},
-            {-1,-1,0, 0, 0, 0, 0, 0, 0, 0,-1,-1},
-            {-1,-1,0, 0, 0, 0, 0, 0, 0, 0,-1,-1},
-            {-1,-1,0, 0, 0, 0, 0, 0, 0, 0,-1,-1},
-            {-1,-1,0, 0, 0, 0, 0, 0, 0, 0,-1,-1},
-            {-1,-1,1, 1, 1, 1, 1, 1, 1, 1,-1,-1},
-            {-1,-1,2, 3, 4, 5, 6, 4, 3, 2,-1,-1},
-            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+        {
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+            {-1, -1, 2, 3, 4, 5, 6, 4, 3, 2, -1, -1},
+            {-1, -1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1},
+            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},
+            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},
+            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},
+            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},
+            {-1, -1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1},
+            {-1, -1, 2, 3, 4, 5, 6, 4, 3, 2, -1, -1},
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         };
 
     for (int i = 0; i < 12; i++)
     {
         for (int j = 0; j < 12; j++)
         {
-            S[i][j].data=empty;
+            S[i][j].data = empty;
             S[i][j].data.piece = pieces_initial[i][j];
 
-            if ((i == 2 || i == 3) && (j>=2 && j <=9))
+            if ((i == 2 || i == 3) && (j >= 2 && j <= 9))
             {
                 S[i][j].data.color = 0;
             }
-            else if ((i == 8 || i == 9) && (j>=2 && j <=9))
+            else if ((i == 8 || i == 9) && (j >= 2 && j <= 9))
             {
                 S[i][j].data.color = 1;
             }
@@ -259,18 +351,16 @@ void struct_board(square S[][12])
                 S[i][j].data.color = 2;
             }
 
-            if (S[i][j].data.piece==PAWN){
+            if (S[i][j].data.piece == PAWN)
+            {
                 S[i][j].data.metadata.pawnmetadata.enpassant = 0;
                 S[i][j].data.metadata.pawnmetadata.pawndouble = 1;
             }
-            
-            else if(S[i][j].data.piece==ROOK){
-                S[i][j].data.metadata.rookmetadata.rookcastle = true;
-                
-            }
 
-            
-            
+            else if (S[i][j].data.piece == ROOK)
+            {
+                S[i][j].data.metadata.rookmetadata.rookcastle = true;
+            }
         }
     }
 }
@@ -283,8 +373,9 @@ void view_board(square S[][12])
     {
         for (j = 0; j < 12; j++)
         {
-            if( S[i][j].data.piece != -1){
-            printf("\t%d  %s\t", S[i][j].data.color, piece_list[S[i][j].data.piece]);
+            if (S[i][j].data.piece != -1)
+            {
+                printf("\t%d %s\t", S[i][j].data.color, piece_list[S[i][j].data.piece]);
             }
         }
         j = 0;
