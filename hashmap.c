@@ -25,4 +25,21 @@
 
 int main(){
     
+
+    int a[12][12];
+    for (int i=0;i<12;i++){
+        for (int j=0;j<12;j++){
+            a[i][j] = i*10+j;
+
+        }
+    }
+    for (int i=0;i<12;i++){
+        for (int j=0;j<12;j++){
+
+            printf("%d\t",a[i][j]);
+        }
+    printf("\n");
+    }
+
+    printf("\n%d \t%d \t %d ", a[10][0], a[0][10], a[1][0]);
 }

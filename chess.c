@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include "headers.h"
 
-void valid_moves(square S[][8], int from, int to)
+void valid_moves(square S[][12], int from, int to)
 {
     int from_row;
     int from_col;
@@ -17,12 +17,12 @@ void valid_moves(square S[][8], int from, int to)
 
     printf("checking which piece is it? for position %d to position %d\n", from, to);
 
-    from_row = from / 10;
+    from_row = from / 10 ;
     from_col = (from - from_row * 10);
 
     printf("The piece is: %s\n", piece_list[S[from_row][from_col].data.piece]);
     printf("From row and From col is : %d %d \n", from_row, from_col);
-    to_row = to / 10;
+    to_row = to / 10 ;
     to_col = (to - to_row * 10);
     printf("To row and to col is : %d %d \n", to_row, to_col);
     diff = to - from;
@@ -133,6 +133,7 @@ void valid_moves(square S[][8], int from, int to)
                 printf("right to left\n");
                 for (i = from_col-1; i > to_col; i--)
                 {
+
                     if (S[from_row][i].data.piece == 0);
                     else //something blocks the rook
                     {
@@ -204,32 +205,35 @@ void valid_moves(square S[][8], int from, int to)
     }
 }
 
-void struct_board(square S[][8])
+void struct_board(square S[][12])
 {
-    int pieces_initial[8][8] =
-        {
-            {2, 3, 4, 5, 6, 4, 3, 2},
-            {1, 1, 1, 1, 1, 1, 1, 1},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1},
-            {2, 3, 4, 5, 6, 4, 3, 2},
+    int pieces_initial[12][12] =
+        {   {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+            {-1,-1,2, 3, 4, 5, 6, 4, 3, 2,-1,-1},
+            {-1,-1,1, 1, 1, 1, 1, 1, 1, 1,-1,-1},
+            {-1,-1,0, 0, 0, 0, 0, 0, 0, 0,-1,-1},
+            {-1,-1,0, 0, 0, 0, 0, 0, 0, 0,-1,-1},
+            {-1,-1,0, 0, 0, 0, 0, 0, 0, 0,-1,-1},
+            {-1,-1,0, 0, 0, 0, 0, 0, 0, 0,-1,-1},
+            {-1,-1,1, 1, 1, 1, 1, 1, 1, 1,-1,-1},
+            {-1,-1,2, 3, 4, 5, 6, 4, 3, 2,-1,-1},
+            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+            {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
         };
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 12; i++)
     {
-        for (int j = 0; j < 8; j++)
+        for (int j = 0; j < 12; j++)
         {
             S[i][j].data=empty;
             S[i][j].data.piece = pieces_initial[i][j];
 
-            if (i == 0 || i == 1)
+            if ((i == 2 || i == 3) && (j>=2 && j <=9))
             {
                 S[i][j].data.color = 0;
             }
-            else if (i == 6 || i == 7)
+            else if ((i == 8 || i == 9) && (j>=2 && j <=9))
             {
                 S[i][j].data.color = 1;
             }
@@ -254,15 +258,17 @@ void struct_board(square S[][8])
     }
 }
 
-void view_board(square S[][8])
+void view_board(square S[][12])
 {
     int j = 0;
     printf("\n");
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 12; i++)
     {
-        for (j = 0; j < 8; j++)
+        for (j = 0; j < 12; j++)
         {
+            if( S[i][j].data.piece != -1){
             printf("\t%d  %s\t", S[i][j].data.color, piece_list[S[i][j].data.piece]);
+            }
         }
         j = 0;
         printf("\n");
@@ -272,12 +278,12 @@ void view_board(square S[][8])
 int main()
 {
 
-    int row = 8;
-    int col = 8;
+    int row = 12;
+    int col = 12;
 
     int from = 0;
     int to = 0;
-    square S[8][8];
+    square S[12][12];
 
     struct_board(S);
     view_board(S);
@@ -291,8 +297,8 @@ int main()
         scanf("%d", &from);
         scanf("%d", &to);
         printf("%d \t %d\n", from, to);
-        from = from - 11;
-        to = to - 11;
+        from = from + 11;
+        to = to + 11;
 
         valid_moves(S, from, to);
         view_board(S);
