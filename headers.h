@@ -30,10 +30,18 @@ typedef struct
     bool pawndouble;
 } PAWNMETADATA;
 
+
+typedef struct 
+{
+    bool rookcastle;
+} ROOKMETADATA;
+
 typedef union
 {
     PAWNMETADATA pawnmetadata;
+    ROOKMETADATA rookmetadata;
 } METADATA;
+
 
 typedef struct
 {

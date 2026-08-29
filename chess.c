@@ -39,6 +39,7 @@ void valid_moves(square S[][8], int from, int to)
 
     // pawn piece
     case 1:
+
     {
         bool to_en = S[to_row][to_col].data.metadata.pawnmetadata.enpassant;
         bool from_en = S[from_row][from_col].data.metadata.pawnmetadata.enpassant;
@@ -46,7 +47,6 @@ void valid_moves(square S[][8], int from, int to)
         bool to_pd = S[to_row][to_col].data.metadata.pawnmetadata.pawndouble;
 
         printf("\n The piece is pawn\n");
-
         if (((diff == 10 || diff == 20) || (diff == -10 || diff == -20)) && to_piece == 0)
         {
             printf("The pawn move is valid for straight move\n");
@@ -155,8 +155,9 @@ void valid_moves(square S[][8], int from, int to)
                     }
                 }
             }
-            S[to_row][to_col].data.piece = S[from_row][from_col].data.piece;
+            S[to_row][to_col].data = S[from_row][from_col].data;
             S[from_row][from_col].data = empty;
+            S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
 
         }
         else if (from_col == to_col) //vertical movement
@@ -193,8 +194,9 @@ void valid_moves(square S[][8], int from, int to)
                 }
                 
             }
-            S[to_row][to_col].data.piece = S[from_row][from_col].data.piece;
+            S[to_row][to_col].data = S[from_row][from_col].data;
             S[from_row][from_col].data = empty;
+            S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
         }
     }
     invalid_move:
@@ -215,12 +217,14 @@ void struct_board(square S[][8])
             {1, 1, 1, 1, 1, 1, 1, 1},
             {2, 3, 4, 5, 6, 4, 3, 2},
         };
+
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
         {
-
+            S[i][j].data=empty;
             S[i][j].data.piece = pieces_initial[i][j];
+
             if (i == 0 || i == 1)
             {
                 S[i][j].data.color = 0;
@@ -233,11 +237,19 @@ void struct_board(square S[][8])
             {
                 S[i][j].data.color = 2;
             }
-            if (S[i][j].data.piece == 1)
-            {
-                S[i][j].data.metadata.pawnmetadata.pawndouble = 1;
+
+            if (S[i][j].data.piece==PAWN){
                 S[i][j].data.metadata.pawnmetadata.enpassant = 0;
+                S[i][j].data.metadata.pawnmetadata.pawndouble = 1;
             }
+            
+            else if(S[i][j].data.piece==ROOK){
+                S[i][j].data.metadata.rookmetadata.rookcastle = true;
+                
+            }
+
+            
+            
         }
     }
 }
