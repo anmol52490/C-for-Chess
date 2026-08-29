@@ -38,7 +38,7 @@ void valid_moves(square S[][12], int from, int to)
     {
 
     // pawn piece
-    case 1:
+    case PAWN:
 
     {
         bool to_en = S[to_row][to_col].data.metadata.pawnmetadata.enpassant;
@@ -122,10 +122,10 @@ void valid_moves(square S[][12], int from, int to)
         break;
     }
     // THE ROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOK
-    case 2:
+    case ROOK:
     {
         printf("The piece is rooook\n");
-        if (from_row == to_row) //horizontal movement
+        if ((from_row == to_row) && S[to_row][to_col].data.piece==0) //horizontal movement
         {
             printf("the from_col: %d == to_col: %d\n",from_col,to_col);
             if (from_col > to_col)  //right to left
@@ -166,7 +166,7 @@ void valid_moves(square S[][12], int from, int to)
             }
 
         }
-        else if (from_col == to_col) //vertical movement
+        else if (from_col == to_col && S[to_row][to_col].data.piece==0) //vertical movement
         {
             printf("the from_row: %d == to_row: %d\n",from_row,to_row);
             if (from_row > to_row) //down to up 
@@ -209,6 +209,13 @@ void valid_moves(square S[][12], int from, int to)
                 printf("same color dude what are you doing? LOCK IN \n");
             }
         }
+        break;
+    }
+
+
+    case KNIGHT:{
+        printf("Welcome to the knightworld");
+
     }
     invalid_move:
     break;
