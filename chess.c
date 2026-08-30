@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "headers.h"
 
 void valid_moves(square S[][12], int from, int to)
@@ -134,8 +135,7 @@ void valid_moves(square S[][12], int from, int to)
                 for (i = from_col - 1; i > to_col; i--)
                 {
 
-                    if (S[from_row][i].data.piece == 0)
-                        ;
+                    if (S[from_row][i].data.piece == 0);
                     else // something blocks the rook
                     {
                         printf("invalid rook move\n");
@@ -161,7 +161,7 @@ void valid_moves(square S[][12], int from, int to)
             if (from_color != to_color)
             {
                 S[to_row][to_col].data = S[from_row][from_col].data;
-                S[from_row][from_col].data = empty;
+
                 S[to_row][to_col].data.metadata.rookmetadata.rookcastle = 0;
             }
             else
@@ -218,6 +218,7 @@ void valid_moves(square S[][12], int from, int to)
         break;
     }
 
+    // knight
     case KNIGHT:
     {
         printf("Welcome to the knightworld\n");
@@ -308,6 +309,101 @@ void valid_moves(square S[][12], int from, int to)
             break;
         }
     }
+
+    // bishop
+    case BISHOP:
+    {
+        printf("yooo i am a diagonal guy\n");
+
+        if (abs(from_row - to_row) == abs(from_col - to_col) && to_piece != -1 && to_color != from_color)
+        {
+            printf("bishop move is valid till now\n");
+
+            // north-east
+            if (from_row > to_row && from_col < to_col)
+            {
+                printf("bishop is trying to move north-east");
+                for (int i = from_row - 1; i < to_row; i--)
+                {
+                    for (int j = from_col; j >= to_col; j++)
+                    {
+                        if (S[i][j].data.piece == 0)
+                            ;
+                        else
+                        {
+                            printf("something blocks off bishop\n");
+                            goto invalid_move;
+                        }
+                    }
+                }
+            }
+
+            // north-west
+            else if (from_row > to_row && from_col > to_col)
+            {
+                printf("bishop is trying to move north-west");
+                for (int i = from_row; i <= to_row; i--)
+                {
+                    for (int j = from_col; j <= to_col; j--)
+                    {
+                        if (S[i][j].data.piece == 0)
+                            ;
+                        else
+                        {
+                            printf("something blocks off bishop\n");
+                            goto invalid_move;
+                        }
+                    }
+                }
+            }
+
+            // south-east
+            else if (from_row < to_row && from_col < to_col)
+            {
+                printf("bishop is trying to move south-east");
+                for (int i = from_row; i <= to_row; i++)
+                {
+                    for (int j = from_col; j >= to_col; j++)
+                    {
+                        if (S[i][j].data.piece == 0)
+                            ;
+                        else
+                        {
+                            printf("something blocks off bishop\n");
+                            goto invalid_move;
+                        }
+                    }
+                }
+            }
+
+            // south west
+            else if (from_row > to_row && from_col < to_col)
+            {
+                printf("bishop is trying to move south-west");
+                for (int i = from_row; i <= to_row; i++)
+                {
+                    for (int j = from_col; j <= to_col; j--)
+                    {
+                        if (S[i][j].data.piece == 0)
+                            ;
+                        else
+                        {
+                            printf("something blocks off bishop\n");
+                            goto invalid_move;
+                        }
+                    }
+                }
+            }
+            S[to_row][to_col].data = S[from_row][from_col].data;
+            S[from_row][from_col].data = empty;
+        }
+        else
+        {
+            printf("Invalid move for bishop\n");
+        }
+        break;
+    }
+
     invalid_move:
         break;
     }
@@ -411,4 +507,5 @@ int main()
         valid_moves(S, from, to);
         view_board(S);
     } while (1);
+
 }
