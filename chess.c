@@ -3,6 +3,13 @@
 #include <stdlib.h>
 #include "headers.h"
 
+bool regular_rook_move(square S[][12], int from_row, int from_col, int to_row, int to_col)
+{
+
+    bool passable;
+    printf("the piece is rook");
+    return passable;
+}
 void valid_moves(square S[][12], int from, int to)
 {
     int from_row;
@@ -48,6 +55,7 @@ void valid_moves(square S[][12], int from, int to)
         bool to_pd = S[to_row][to_col].data.metadata.pawnmetadata.pawndouble;
 
         printf("\n The piece is pawn\n");
+        printf("Don't underestimate me until you don't\n");
         if (((diff == 10 || diff == 20) || (diff == -10 || diff == -20)) && to_piece == 0)
         {
             printf("The pawn move is valid for straight move\n");
@@ -135,7 +143,8 @@ void valid_moves(square S[][12], int from, int to)
                 for (i = from_col - 1; i > to_col; i--)
                 {
 
-                    if (S[from_row][i].data.piece == 0);
+                    if (S[from_row][i].data.piece == 0)
+                        ;
                     else // something blocks the rook
                     {
                         printf("invalid rook move\n");
@@ -404,6 +413,185 @@ void valid_moves(square S[][12], int from, int to)
         break;
     }
 
+    case QUEEN:
+    {
+        printf("The piece is queen\n");
+        if (S[from_row][from_col].data.metadata.queenmetadata.queenfirstmove)
+        {
+            S[from_row][from_col].data.metadata.queenmetadata.queenfirstmove = 0;
+            printf("here she comes\n");
+            printf(" Rightful Queen of the Andals and the First Men, the Mother of Dragons\n");
+        }
+
+        if ((from_color!=to_color && to_piece != -1 )&&((((from_row == to_row) || (from_col == to_col))) || ((abs(from_row - to_row) == abs(from_col - to_col)))))
+        {
+            printf("from color: %d \t to color:%d\t",from_color,to_color);
+            printf("queen move is valid till now\n");
+
+            // rook style move
+            if (((from_row == to_row) || (from_col == to_col)))
+            {
+                printf("queen but rook style\n");
+
+                if (from_row == to_row) // horizontal movement
+                {
+                    if (from_col > to_col) // right to left
+                    {
+                        printf("right to left\n");
+                        for (i = from_col - 1; i > to_col; i--)
+                        {
+
+                            if (S[from_row][i].data.piece == 0)
+                                ;
+                            else // something blocks the queen
+                            {
+                                printf("invalid queen move\n");
+                                goto invalid_move;
+                            }
+                        }
+                    }
+
+                    if (from_col < to_col) // left to right
+                    {
+                        printf("left to right\n");
+                        for (i = from_col + 1; i < to_col; i++)
+                        {
+                            if (S[from_row][i].data.piece == 0)
+                                ;
+                            else // something blocks the queen
+                            {
+                                printf("invalid queen move\n");
+                                goto invalid_move;
+                            }
+                        }
+                    }
+                }
+
+                else if (from_col == to_col) // vertical movement
+                {
+                    printf("the from_row: %d == to_row: %d\n", from_row, to_row);
+                    if (from_row > to_row) // down to up
+                    {
+                        printf("down to up\n");
+                        for (i = from_row - 1; i > to_row; i--)
+                        {
+                            if (S[i][from_col].data.piece == 0)
+                                ;
+                            else // something blocks queen
+                            {
+                                printf("invalid queen move\n");
+                                goto invalid_move;
+                            }
+                        }
+                    }
+
+                    else if (from_row < to_row) // up to down
+                    {
+                        printf("up to down\n");
+                        for (i = from_row + 1; i < to_row; i++)
+                        {
+                            if (S[i][from_col].data.piece == 0)
+                                ;
+                            else
+                            {
+                                printf("invalid queen move\n");
+                                goto invalid_move;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // bishop-style move
+            if (abs(from_row - to_row) == abs(from_col - to_col))
+            {
+                printf("queen but bishop style\n");
+
+                if (from_row > to_row && from_col < to_col)
+                {
+                    printf("queen is trying to move north-east");
+                    for (int i = from_row - 1; i < to_row; i--)
+                    {
+                        for (int j = from_col; j >= to_col; j++)
+                        {
+                            if (S[i][j].data.piece == 0)
+                                ;
+                            else
+                            {
+                                printf("something blocks off queen\n");
+                                goto invalid_move;
+                            }
+                        }
+                    }
+                }
+
+                // north-west
+                else if (from_row > to_row && from_col > to_col)
+                {
+                    printf("queen is trying to move north-west");
+                    for (int i = from_row; i <= to_row; i--)
+                    {
+                        for (int j = from_col; j <= to_col; j--)
+                        {
+                            if (S[i][j].data.piece == 0)
+                                ;
+                            else
+                            {
+                                printf("something blocks off queen\n");
+                                goto invalid_move;
+                            }
+                        }
+                    }
+                }
+
+                // south-east
+                else if (from_row < to_row && from_col < to_col)
+                {
+                    printf("queen is trying to move south-east");
+                    for (int i = from_row; i <= to_row; i++)
+                    {
+                        for (int j = from_col; j >= to_col; j++)
+                        {
+                            if (S[i][j].data.piece == 0)
+                                ;
+                            else
+                            {
+                                printf("something blocks off queen\n");
+                                goto invalid_move;
+                            }
+                        }
+                    }
+                }
+
+                // south west
+                else if (from_row > to_row && from_col < to_col)
+                {
+                    printf("queen is trying to move south-west");
+                    for (int i = from_row; i <= to_row; i++)
+                    {
+                        for (int j = from_col; j <= to_col; j--)
+                        {
+                            if (S[i][j].data.piece == 0)
+                                ;
+                            else
+                            {
+                                printf("something blocks off queen\n");
+                                goto invalid_move;
+                            }
+                        }
+                    }
+                }
+            }
+
+            S[to_row][to_col].data = S[from_row][from_col].data;
+            S[from_row][from_col].data = empty;
+        }
+
+        else{
+            printf("invalid queen move\n");
+            goto invalid_move;
+        }
+    }
     invalid_move:
         break;
     }
@@ -457,6 +645,21 @@ void struct_board(square S[][12])
             {
                 S[i][j].data.metadata.rookmetadata.rookcastle = true;
             }
+
+            else if (S[i][j].data.piece == QUEEN)
+            {
+                S[i][j].data.metadata.queenmetadata.queenfirstmove = true;
+            }
+
+            else if (S[i][j].data.piece == KNIGHT)
+            {
+                S[i][j].data.metadata.knightmetadata.knightfirstmove = true;
+            }
+
+            else if (S[i][j].data.piece == BISHOP)
+            {
+                S[i][j].data.metadata.bishopmetadata.bishopfirstmove = true;
+            }
         }
     }
 }
@@ -507,5 +710,4 @@ int main()
         valid_moves(S, from, to);
         view_board(S);
     } while (1);
-
 }

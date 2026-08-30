@@ -30,6 +30,17 @@ typedef struct
     bool pawndouble;
 } PAWNMETADATA;
 
+typedef struct {
+    bool queenfirstmove;
+}QUEENMETADATA;
+
+typedef struct{
+    bool knightfirstmove;
+}KNIGHTMETADATA;
+
+typedef struct{
+    bool bishopfirstmove;
+}BISHOPMETADATA;
 
 typedef struct 
 {
@@ -40,6 +51,9 @@ typedef union
 {
     PAWNMETADATA pawnmetadata;
     ROOKMETADATA rookmetadata;
+    KNIGHTMETADATA knightmetadata;
+    BISHOPMETADATA bishopmetadata;
+    QUEENMETADATA queenmetadata;
 } METADATA;
 
 
