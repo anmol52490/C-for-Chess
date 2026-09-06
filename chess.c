@@ -10,6 +10,318 @@ bool regular_rook_move(square S[][12], int from_row, int from_col, int to_row, i
     printf("the piece is rook");
     return passable;
 }
+
+
+void update_king_metadata(int from_row,int from_col, int from_color){
+
+    if(from_color==1){
+        white_kingrow=from_row;
+        white_kingcol=from_col;
+    }
+    else{
+        black_kingrow=from_row;
+        black_kingcol=from_col;
+    }
+}
+
+void check_for_checks(square S[][12],int attk_row,int attk_col,int attk_color,int attk_piece){
+    int kingrow;
+    int kingcol;
+    int kingcolor;
+
+    if(attk_color==1){
+        kingrow=black_kingrow;
+        kingcol=black_kingcol;
+        kingcolor=2;
+    }
+    else if(attk_color==2){
+        kingrow=white_kingrow;
+        kingcol=white_kingcol;
+        kingcolor=1;
+    }
+
+    switch(attk_piece)
+    {
+        case ROOK:
+        {
+            if (attk_col == kingcol && kingcolor!=attk_color)//vertical movement
+            {
+            if (attk_row < kingrow){
+            for (int i = attk_row + 1; i < kingrow; i++) //up to down
+                {
+                    if (S[i][attk_col].data.piece == 0);
+
+                    else if(S[i][attk_col].data.piece == 5){
+                        printf("the king is in check from rook rook is in down \n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    else // something blocks the rook
+                    {
+                        printf("invalid rook move\n");
+                        goto invalid_move_check;
+                    }
+                }
+            }
+
+
+            else if (attk_row > attk_col) // down to up
+            {
+            for (int i = attk_row - 1; i > kingrow; i--)
+                {
+                    if (S[i][attk_col].data.piece == 0)
+                    {
+                        printf(" %d %d after if\n", i, kingcol);
+                    }
+                    else if(S[i][attk_col].data.piece == 5){
+                        printf("the king is in check from rook rook is in down \n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    else
+                    {
+                        // printf("inside else\n");
+                        printf("invalid rook move\n");
+                        goto invalid_move_check;
+                    }
+                }
+
+            }
+        }
+        if ((attk_row == kingrow) && kingcolor!=attk_color) // horizontal movement
+        {
+            printf("the from_col: %d == to_col: %d\n", attk_col, kingcol);
+            if (attk_col > kingcol) // right to left
+            {
+                printf("right to left\n");
+                for (int i = attk_col - 1; i > kingcol; i--)
+                {
+
+                    if (S[attk_row][i].data.piece == 0)
+                        ;
+                    else if(S[i][attk_col].data.piece == 5){
+                        printf("the king is in check from rook  is in left \n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    else // something blocks the rook
+                    {
+                        printf("invalid rook move\n");
+                        goto invalid_move_check;
+                    }
+                }
+            }
+
+            if (attk_col < kingcol) // left to right
+            {
+                printf("left to right\n");
+                for (int i = attk_col + 1; i < kingcol; i++)
+                {
+                    if (S[attk_row][i].data.piece == 0)
+                        ;
+                    else if(S[i][attk_col].data.piece == 5){
+                        printf("the king is in check from rook is in right \n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    else // something blocks the rook
+                    {
+                        printf("invalid rook move\n");
+                        goto invalid_move_check;
+                    }
+                }
+            }
+            
+            
+        }
+        goto invalid_move_check;
+        break;
+        }
+
+        case KNIGHT:
+    {
+        printf("Knight checking check to king\n");
+        if (attk_color != kingcolor )
+        {
+            
+            if (attk_row - 2 == kingrow)
+            {
+                // going up
+                printf("going up\n");
+                if (kingcol < attk_col)
+                {
+                    // left
+                    printf("going up-left\n");
+                    // S[kingrow][kingcol].data = S[attk_row][attk_col].data;
+                    if(S[attk_row-2][attk_col-1].data.piece == 5){
+                        printf("the king is in check from knight is in down right from king\n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    // S[attk_row][attk_col].data = empty;
+                }
+                else
+                {
+
+                    printf("going up-right\n");
+                    if(S[attk_row-2][attk_col+1].data.piece == 5){
+                        printf("the king is in check from knight is in down right from king\n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    // S[attk_row][attk_col].data = empty;
+                }
+            }
+
+            else if (attk_row + 2 == kingrow)
+            {
+                // going down
+                if (kingcol < attk_col)
+                {
+                    // left
+                    printf("going down-left\n");
+                   if(S[attk_row+2][attk_col-1].data.piece == 5){
+                        printf("the king is in check from knight is in down right from king\n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    // S[attk_row][attk_col].data = empty;
+                }
+                else
+                {
+                    // right
+                    printf("going down-right\n");
+                    if(S[attk_row+2][attk_col+1].data.piece == 5){
+                        printf("the king is in check from knight is in down right from king\n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    // S[attk_row][attk_col].data = empty;
+                }
+            }
+
+            else if(attk_col - 2 == kingcol)
+            {
+                // going left
+                if (kingrow < attk_row)
+                {
+                    // up
+                    printf("going left-up\n");
+                    if(S[attk_row-1][attk_col-2].data.piece == 5){
+                        printf("the king is in check from knight is in down right from king\n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    // S[attk_row][attk_col].data = empty;
+                }
+                else
+                {
+                    // down
+                    printf("going left-down\n");
+                    if(S[attk_row-1][attk_col-2].data.piece == 5){
+                        printf("the king is in check from knight is in down right from king\n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    // S[attk_row][attk_col].data = empty;
+                }
+            }
+
+            else if (attk_col + 2 == kingcol)
+            {
+                // going right
+                if (kingrow < attk_row)
+                {
+                    // up
+                    printf("going right-up\n");
+                    if(S[attk_row-1][attk_col+2].data.piece == 5){
+                        printf("the king is in check from knight is in down right from king\n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    // S[attk_row][attk_col].data = empty;
+                }
+                else
+                {
+                    // down
+                    printf("going right-down\n");
+                    if(S[attk_row+1][attk_col+2].data.piece == 5){
+                        printf("the king is in check from knight is in down right from king\n");
+                        if(kingcolor==1){
+                            white_king_check=true;
+                        }
+                        else{
+                            black_king_check=true;
+                        }
+                    }
+                    // S[attk_row][attk_col].data = empty;
+                }
+            }
+        }
+        else
+        {
+            printf("knight can't check the king\n");
+            break;
+        }
+    }
+
+        invalid_move_check:
+        break;
+
+
+    }
+
+
+
+
+}
+
+
+
 void valid_moves(square S[][12], int from, int to)
 {
     int from_row;
@@ -311,12 +623,16 @@ void valid_moves(square S[][12], int from, int to)
                     S[from_row][from_col].data = empty;
                 }
             }
+            printf("%d\t%d\t%d\t\n",to_row,to_col,from_color);
+            check_for_checks(S,to_row,to_col,from_color,KNIGHT);
         }
         else
         {
             printf("invalid knight move dude LOCK IN!!\n");
             break;
         }
+        break;
+        
     }
 
     // bishop
@@ -592,6 +908,78 @@ void valid_moves(square S[][12], int from, int to)
             goto invalid_move;
         }
     }
+
+    //king
+    case KING:
+        {
+            printf("The piece is almost a pawn on steroids(king)\n");
+            if(S[from_row][from_col].data.metadata.kingmetadata.kingcastle){
+                printf("uhmmm... about me I am the brain i guess\n");
+            }
+
+            if((from_color!=to_color && to_piece!=-1)&&(abs(from_row-to_row==1)||abs(from_col-to_col==1)))
+            {
+                S[from_row][from_col].data.metadata.kingmetadata.kingcastle = false;
+                S[to_row][to_col].data=S[from_row][from_col].data;
+                S[from_row][from_col].data = empty;
+                update_king_metadata(to_row,to_col,from_color);
+                
+            }
+            else if(from_color==to_color && to_piece == 2 ){
+                printf("CASTLE CASTLE CASTLÉ\n");
+            if(S[from_row][from_col].data.metadata.kingmetadata.kingcastle && S[to_row][to_col].data.metadata.rookmetadata.rookcastle){
+                
+                if(from_col>to_col)//king is on right from castling rook
+                {
+                    printf("king is on right of castling rook\n");
+                    for(int i=from_col-1;i>to_col;i--){
+                        printf("inside for loop %d\n",i);
+                        if(S[from_row][i].data.piece==0){
+                            printf("nothing in 1 step left of king\n");
+                        }
+                        else{
+                            printf("castling is invalid coz something is in between of king and rook");
+                            goto invalid_move;
+                        }
+
+                    }
+                    S[from_row][from_col].data.metadata.kingmetadata.kingcastle = false;
+                    update_king_metadata(from_row,from_col,from_color);
+                    // S[from_row][from_col].data.metadata.kingmetadata.kingfirstmove = false;
+                    S[to_row][to_col].data.metadata.rookmetadata.rookcastle =false;
+                    S[from_row][from_col-2].data=S[from_row][from_col].data;
+                    S[from_row][from_col].data=empty;
+                    S[from_row][from_col-1].data=S[to_row][to_col].data;
+                    S[to_row][to_col].data=empty;
+
+                }
+                else//king is on left of castling rook
+                {
+                    printf("king is on left of castling rook\n");
+                    for(int i=from_col;i<to_col;i++){
+                        if(S[from_row][i-1].data.piece==0);
+                        else{
+                            printf("castling is invalid coz something is in between of king and rook\n");
+                            goto invalid_move;
+                        }
+                    }
+                    // S[from_row][from_col].data.metadata.kingmetadata.kingcastle = false;
+                    // S[from_row][from_col].data.metadata.kingmetadata.kingfirstmove = false;
+                    S[to_row][to_col].data.metadata.rookmetadata.rookcastle =false;
+                    update_king_metadata(from_row,from_col,from_color);
+                    S[from_row][from_col+2].data=S[from_row][from_col].data;
+                    S[from_row][from_col].data=empty;
+                    S[from_row][from_col+1].data=S[to_row][from_col].data;
+                    S[to_row][to_col].data=empty;
+                }
+            }
+            }
+            else{
+                printf("king's invalid move\n");
+            }
+            break;
+        }
+
     invalid_move:
         break;
     }
@@ -601,18 +989,18 @@ void struct_board(square S[][12])
 {
     int pieces_initial[12][12] =
         {
-            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-            {-1, -1, 2, 3, 4, 5, 6, 4, 3, 2, -1, -1},
-            {-1, -1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1},
-            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},
-            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},
-            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},
-            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},
-            {-1, -1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1},
-            {-1, -1, 2, 3, 4, 5, 6, 4, 3, 2, -1, -1},
-            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},//0
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},//1
+            {-1, -1, 2, 3, 4, 5, 6, 4, 3, 2, -1, -1},//2
+            {-1, -1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1},//3
+            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},//4
+            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},//5
+            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},//6
+            {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1},//7
+            {-1, -1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1},//8
+            {-1, -1, 2, 3, 4, 5, 6, 4, 3, 2, -1, -1},//9
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},//10
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},//11
         };
 
     for (int i = 0; i < 12; i++)
@@ -654,11 +1042,16 @@ void struct_board(square S[][12])
             else if (S[i][j].data.piece == KNIGHT)
             {
                 S[i][j].data.metadata.knightmetadata.knightfirstmove = true;
+
             }
 
             else if (S[i][j].data.piece == BISHOP)
             {
                 S[i][j].data.metadata.bishopmetadata.bishopfirstmove = true;
+            }
+            else if (S[i][j].data.piece == KING)
+            {
+                S[i][j].data.metadata.kingmetadata.kingcastle = true;
             }
         }
     }

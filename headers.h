@@ -47,6 +47,12 @@ typedef struct
     bool rookcastle;
 } ROOKMETADATA;
 
+typedef union 
+{
+    bool kingcastle;
+} KINGMETADATA;
+
+
 typedef union
 {
     PAWNMETADATA pawnmetadata;
@@ -54,6 +60,7 @@ typedef union
     KNIGHTMETADATA knightmetadata;
     BISHOPMETADATA bishopmetadata;
     QUEENMETADATA queenmetadata;
+    KINGMETADATA kingmetadata;
 } METADATA;
 
 
@@ -81,3 +88,10 @@ const char *piece_list[] = {
     "B",
     "Ki",
     "Q"};
+
+int white_kingrow=2;
+int white_kingcol=5;
+int black_kingrow=9;
+int black_kingcol=5;
+bool black_king_check=false;
+bool white_king_check=false;
